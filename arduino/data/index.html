@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	
+		<title>Textuhr</title>
+	</head>
+	
+	<body onload="updateStatus()">
+	
+		<div class="container-fluid">
+			<h1 id="title">Textuhr</h1>
+			<div id="statusLine"></div>
+			<ul class="nav nav-tabs" id="myTab" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="status-tab" data-bs-toggle="tab" data-bs-target="#status" type="button" role="tab" aria-controls="status" aria-selected="true">Konfiguration</button>
+				</li>
+			</ul>
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="status" role="tabpanel" aria-labelledby="status-tab">
+					<div class="row">
+						<div class="col-xs-4 col-md-4">
+							<form action="/" method="post" onsubmit="">
+								<div class="form-group d-grid gap-2">
+									<button class="btn btn-outline-primary btn-block" type="submit" id="restartButton">Restart</button>
+								</div>
+							</form>
+						</div>
+					</div>		
+					
+					<h3>Tag Einstellungen</h3>
+					<div class="row">
+						<div class="col-xs-2 col-md-2">
+							Beginn
+						</div>
+						<div class="col-xs-2 col-md-2">
+							<div class="cs-form">
+								<input type="time" class="form-control" value="10:05" id="tagZeit">
+							</div>
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col-xs-2 col-md-2">
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="flexRadioTag" id="flexRadioTag1">
+								<label class="form-check-label" for="flexRadioTag1">Weiss</label>
+							</div>		
+						</div>
+						<div class="col-xs-2 col-md-2">
+							<input type="range" class="form-range" min="3" max="128" id="tagHell">
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col-xs-2 col-md-2">
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="flexRadioTag" id="flexRadioTag2">
+								<label class="form-check-label" for="flexRadioTag2">Farbe</label>
+							</div>
+						</div>
+						<div class="col-xs-1 col-md-1">
+							<input type="color" class="form-control form-control-color" id="tagFarbeSelect" value="#563d7c">
+						</div>
+						<div class="col-xs-1 col-md-1">
+							<button type="button" class="btn btn-primary" id="tagFarbeSet">Anwenden</button>
+						</div>
+					</div>	
+
+					<h3>Nacht Einstellungen</h3>
+					<div class="row">
+						<div class="col-xs-2 col-md-2">
+							Beginn
+						</div>
+						<div class="col-xs-2 col-md-2">
+							<div class="cs-form">
+								<input type="time" class="form-control" value="10:05" id="nachtZeit">
+							</div>
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col-xs-2 col-md-2">
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="flexRadioNacht" id="flexRadioNacht1">
+								<label class="form-check-label" for="flexRadioNacht1">Weiss</label>
+							</div>	
+						</div>
+						<div class="col-xs-2 col-md-2">
+							<input type="range" class="form-range" min="3" max="128" id="nachtHell">
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col-xs-2 col-md-2">
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="flexRadioNacht" id="flexRadioNacht2">
+								<label class="form-check-label" for="flexRadioNacht2">Farbe</label>
+							</div>
+						</div>
+						<div class="col-xs-1 col-md-1">
+							<input type="color" class="form-control form-control-color" id="nachtFarbeSelect" value="#563d7c">
+						</div>
+						<div class="col-xs-1 col-md-1">
+							<button type="button" class="btn btn-primary" id="nachtFarbeSet">Anwenden</button>
+						</div>
+					</div>	
+					
+				</div>
+			</div>
+		</div>      
+		
+		<!--script(src='js/script.js')-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+		<script>
+	
+		//fetch new URL
+		//refineURL() gives you the freedom to alter the URL string based on your needs. 
+		var myNewURL = refineURL();
+
+		//here you pass the new URL extension you want to appear after the domains '/'. Note that the previous identifiers or "query string" will be replaced. 
+		window.history.pushState("object or string", "Title", "/" + myNewURL );
+
+		//Helper function to extract the URL between the last '/' and before '?' 
+		//If URL is www.example.com/one/two/file.php?user=55 this function will return 'file.php' 
+		function refineURL() {
+			//get full URL
+			var currURL= window.location.href; //get current address
+		
+			//Get the URL between what's after '/' and befor '?' 
+			//1- get URL after'/'
+			var afterDomain= currURL.substring(currURL.lastIndexOf('/') + 1);
+			//2- get the part before '?'
+			var beforeQueryString= afterDomain.split("?")[0];  
+	 
+			return beforeQueryString;     
+		}
+	
+		var Timer_UpdateMeasurements;
+		var tab_pane;
+	
+//		function simplePrint() {
+//			var pretty = document.getElementById('newConfigJSON').value;
+//			var obj = JSON.parse(pretty);
+//			var simple = JSON.stringify(obj);
+//			document.getElementById('newConfigJSON').value = simple;
+//		}		
+			
+		function updateStatus() {  
+
+			$.getJSON('/config.json', function(json) {
+			
+				if ((json["General"].hasOwnProperty("tagStunde")) && (json["General"].hasOwnProperty("tagMinute"))) {
+					document.getElementById("tagZeit").value = String(json["General"].tagStunde).padStart(2, '0') + ":" + String(json["General"].tagMinute).padStart(2, '0');
+					
+				} else document.getElementById("tagZeit").value = "08:01";
+
+				if (json["General"].tagBunt == 0) document.getElementById("flexRadioTag1").checked  = true;
+				else document.getElementById("flexRadioTag2").checked  = true;
+
+				if (json["General"].hasOwnProperty("tagHell")) document.getElementById("tagHell").value = json["General"].tagHell;
+				else document.getElementById("tagHell").value = 50;
+				
+				if (json["General"].hasOwnProperty("tagFarbe")) document.getElementById("tagFarbeSelect").value = rgbToHex(json["General"].tagFarbe[0],json["General"].tagFarbe[1],json["General"].tagFarbe[2]);
+				else document.getElementById("tagFarbeSelect").value = "#6464B4";
+								
+				if ((json["General"].hasOwnProperty("nachtStunde")) && (json["General"].hasOwnProperty("nachtMinute"))) {
+					document.getElementById("nachtZeit").value = String(json["General"].nachtStunde).padStart(2, '0') + ":" + String(json["General"].nachtMinute).padStart(2, '0');
+				} else document.getElementById("nachtZeit").value = "21:01";
+
+				if (json["General"].nachtBunt == 0) document.getElementById("flexRadioNacht1").checked  = true;
+				else document.getElementById("flexRadioNacht2").checked  = true;
+				
+				if (json["General"].hasOwnProperty("nachtHell")) document.getElementById("nachtHell").value = json["General"].nachtHell;
+				else document.getElementById("nachtHell").value = 10;
+				
+				if (json["General"].hasOwnProperty("nachtFarbe")) document.getElementById("nachtFarbeSelect").value = rgbToHex(json["General"].nachtFarbe[0],json["General"].nachtFarbe[1],json["General"].nachtFarbe[2]);
+				else document.getElementById("nachtFarbeSelect").value = "#140A14";
+				
+			}).fail(function(err){
+				console.log("err getJSON status.json " + JSON.stringify(err));
+			});
+		}
+
+		function hexToRgb(hex) {
+		  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		  return result ? {
+			r: parseInt(result[1], 16),
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
+		  } : null;
+		}
+		function rgbToHex(r, g, b) {
+			return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
+		}
+
+
+		const tagZeitValue = document.getElementById("tagZeit");
+		tagZeitValue.addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?tagZeit="+tagZeitValue.value, true); 
+			xhr.send();
+			return true;
+		});
+						
+		const flexRadioTag1Value = document.getElementById("flexRadioTag1");
+		flexRadioTag1Value.addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?tagBunt=0", true); 
+			xhr.send();
+			return true;
+		});		
+		const flexRadioTag2Value = document.getElementById("flexRadioTag2");
+		flexRadioTag2Value.addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?tagBunt=1", true); 
+			xhr.send();
+			return true;
+		});		
+				
+		const tagHellValue = document.getElementById("tagHell");
+		tagHellValue.addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?tagHell="+tagHellValue.value, true); 
+			xhr.send();
+			return true;
+		});
+
+		const tagFarbeValue = document.getElementById("tagFarbeSelect");
+		document.getElementById("tagFarbeSet").addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?tagFarbe=&r="+hexToRgb(tagFarbeValue.value).r+"&g="+hexToRgb(tagFarbeValue.value).g+"&b="+hexToRgb(tagFarbeValue.value).b, true); 
+			xhr.send();
+			return true;
+		});
+		
+		const nachtZeitValue = document.getElementById("nachtZeit");
+		nachtZeitValue.addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?nachtZeit="+nachtZeitValue.value, true); 
+			xhr.send();
+			return true;
+		});
+		
+		const flexRadioNacht1Value = document.getElementById("flexRadioNacht1");
+		flexRadioNacht1Value.addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?nachtBunt=0", true); 
+			xhr.send();
+			return true;
+		});		
+		
+		const flexRadioNacht2Value = document.getElementById("flexRadioNacht2");
+		flexRadioNacht2Value.addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?nachtBunt=1", true); 
+			xhr.send();
+			return true;
+		});		
+		
+		const nachtHellValue = document.getElementById("nachtHell");
+		nachtHellValue.addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?nachtHell="+nachtHellValue.value, true); 
+			xhr.send();
+			return true;
+		});
+		
+		const nachtFarbeValue = document.getElementById("nachtFarbeSelect");
+		document.getElementById("nachtFarbeSet").addEventListener("mouseup", function (event) {
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "/update?nachtFarbe=&r="+hexToRgb(nachtFarbeValue.value).r+"&g="+hexToRgb(nachtFarbeValue.value).g+"&b="+hexToRgb(nachtFarbeValue.value).b, true); 
+			xhr.send();
+			return true;
+		});		
+		
+    </script>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

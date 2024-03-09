@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	
+    <title>ESP Sensor Logger</title>
+  </head>
+  <body onload="updateStatus()">
+  <div class="container-fluid">
+	<h1 id="title">Logger - ESP Sensor Logger</h1>
+	<div id="statusLine"></div>
+	<ul class="nav nav-tabs" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+			<button class="nav-link active" id="status-tab" data-bs-toggle="tab" data-bs-target="#status" type="button" role="tab" aria-controls="status" aria-selected="true">Status</button>
+		</li>
+		<li class="nav-item" role="presentation">
+			<button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab" aria-controls="config" aria-selected="false">Configuration</button>
+		</li>
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane fade show active" id="status" role="tabpanel" aria-labelledby="status-tab">
+			<h3>Startup results of all system components</h3>
+			<div class="row">
+				<div class="col-xs-3 col-md-3">
+				</div>
+				<div class="col-xs-9 col-md-9">
+					<form action="/" method="post" onsubmit="">
+						<div class="form-group d-grid gap-2">
+							<button class="btn btn-outline-primary btn-block" type="submit" id="restartButton">Restart</button>
+						</div>
+					</form>
+				</div>
+			</div>		
+			<div class="row">
+				<div class="col-xs-2 col-md-2">
+					System
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-success" role="alert" id="sysMAC">MAC</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-success" role="alert" id="sysIP">IP</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-success" role="alert" id="sysInflux">Influx</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysMQTT"> </div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysBLE"> </div>
+				</div>
+			</div>	
+			<div class="row">
+				<div class="col-xs-2 col-md-2">
+					Sensor shield
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysENS160a">ENS160 (1)</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysENS160b">ENS160 (2)</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysENS170A">ENS170A</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysENS210">ENS210</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysENS220">ENS220</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-2 col-md-2">
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysSGP4x">SGP4x</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysSCD4x">SCD4x</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysLDR">LDR</div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysTMP0"> </div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysTMP1"> </div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-2 col-md-2">
+					Window contact
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysWS0"></div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysWS1"></div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysWS2"></div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+					<div class="alert alert-info" role="alert" id="sysWS3"></div>
+				</div>
+				<div class="col-xs-2 col-md-2">
+				</div>
+			</div>
+			<div class="row" id="spacerLine">
+				<div class="col-xs-12 col-md-12">
+					<hr>
+				</div>
+			</div>
+			<div class="row">			
+				<div class="col-xs-3 col-md-3">
+					<div></div>
+				</div>
+				<div class="col-xs-3 col-md-3">
+					<div class="alert alert-success" role="alert">Running well, congratulations</div>
+				</div>
+				<div class="col-xs-3 col-md-3">
+					<div class="alert alert-danger" role="alert">Should be solved to get useful results</div>
+				</div>
+				<div class="col-xs-3 col-md-3">
+					<div class="alert alert-info" role="alert">Not configured, so just ignore it</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
+			<h3>Configuration of connected components</h3>
+			<div class="row">
+				<div class="col-xs-6 col-md-6">
+					<form action="/" method="get" onsubmit="simplePrint();">
+						<div class="form-group">
+							<textarea class="form-control form-control-sm" id="newConfigJSON" name="newConfigJSON" rows="35"></textarea>
+							<button class="btn btn-primary btn-lg btn-block" type="submit">Save</button>
+						</div>
+					</form><br>
+				</div>
+				<div class="col-xs-6 col-md-6">
+					<h3>Examples</h3>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small">{</div>
+						<div class="col-xs-6 col-md-6 bg-light small">Start of configuration</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-md-12"><h5>--- General ---</h5></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small">"General": {</div>
+						<div class="col-xs-6 col-md-6 bg-light small"></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light px-4 small">"LOCATION": "Anywhere",</div>
+						<div class="col-xs-6 col-md-6 bg-light small">Indication of the location of the logger</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light px-4 small bg-opacity-50">"OUT_DEBUG": true,</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">Serial output during runtime (true / false)</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light px-4 small">"CYC_LOG": 10000,</div>
+						<div class="col-xs-6 col-md-6 bg-light small">Data read interval in [ms]</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small">},</div>
+						<div class="col-xs-6 col-md-6 bg-light small"></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-md-12"><h5>--- Influx Database ---</h5></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small">"INFLUX": {</div>
+						<div class="col-xs-6 col-md-6 bg-light small"></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4 bg-opacity-50">"USE": false,</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">General use of sensor board</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light px-4 small">"URL": "http://10.203.60.51:8086",</div>
+						<div class="col-xs-6 col-md-6 bg-light small">InfluxDB server</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4 bg-opacity-50">"TOKEN": "1LqNVngM7KwjJ...",</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">InfluxDB token</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light px-4 small">"ORG": "Sciosense",</div>
+						<div class="col-xs-6 col-md-6 bg-light small">InfluxDB organisation</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light px-4 small bg-opacity-50">"BUCKET": "SHM",</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">InfluxDB bucket</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small">},</div>
+						<div class="col-xs-6 col-md-6 bg-light small"></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-md-12"><h5>--- Sensor shield ---</h5></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small">"SensorShield": {</div>
+						<div class="col-xs-6 col-md-6 bg-light small"></div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4 bg-opacity-50">"ENS160a": false,</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">1st ENS160 sensor for TVOC, eCO2  (not inparallel with 1st ENS170A)</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4">"ENS160b": false,</div>
+						<div class="col-xs-6 col-md-6 bg-light small">2nd ENS160 sensor for TVOC, eCO2</div>
+					</div>				
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4 bg-opacity-50">"AQmin": 0,</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">Expected minimum AQ level</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4">"AQmax": 500,</div>
+						<div class="col-xs-6 col-md-6 bg-light small">Expected maximum AQ level</div>
+					</div>				
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4 bg-opacity-50">"AQdisp": 0,</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">Displayed AQ information: 0: AQI, 1: TVOC, 2: eCO2, 3: AQI500</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4">"ENS210": false,</div>
+						<div class="col-xs-6 col-md-6 bg-light small">ENS210 sensor for temperature and humidty reading</div>
+					</div>				
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4 bg-opacity-50">"Tmin": 10,</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">Expected minimum temperature level</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4">"Tmax": 30,</div>
+						<div class="col-xs-6 col-md-6 bg-light small">Expected maximum temperature level</div>
+					</div>				
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4 bg-opacity-50">"RHmin": 0,</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">Expected minimum humidity level</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4">"RHmax": 100,</div>
+						<div class="col-xs-6 col-md-6 bg-light small">Expected maximum humidity level</div>
+					</div>				
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4 bg-opacity-50">"SGP40": false,</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">Read-out SPG40 sensor</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4">"WS01": [false, "NA1"],</div>
+						<div class="col-xs-6 col-md-6 bg-light small">Reed sensor #1, available and name</div>
+					</div>				
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4 bg-opacity-50">"WS02": [false, "NA2"],</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">Reed sensor #2, available and name</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small px-4">"WS03": [false, "NA3"],</div>
+						<div class="col-xs-6 col-md-6 bg-light small">Reed sensor #3, available and name</div>
+					</div>				
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">"WS04": [false, "NA4"],</div>
+						<div class="col-xs-6 col-md-6 bg-light small bg-opacity-50">Reed sensor #4, available and name</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-6 bg-light small">}</div>
+						<div class="col-xs-6 col-md-6 bg-light small">End of configuration</div>
+					</div>
+				</div>
+			</div>
+        </div>
+	</div>
+        
+    <!--script(src='js/script.js')-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	
+    <script>
+	
+		//fetch new URL
+		//refineURL() gives you the freedom to alter the URL string based on your needs. 
+		var myNewURL = refineURL();
+
+		//here you pass the new URL extension you want to appear after the domains '/'. Note that the previous identifiers or "query string" will be replaced. 
+		window.history.pushState("object or string", "Title", "/" + myNewURL );
+
+		//Helper function to extract the URL between the last '/' and before '?' 
+		//If URL is www.example.com/one/two/file.php?user=55 this function will return 'file.php' 
+		//pseudo code: edit to match your URL settings  
+
+		function refineURL() {
+			//get full URL
+			var currURL= window.location.href; //get current address
+		
+			//Get the URL between what's after '/' and befor '?' 
+			//1- get URL after'/'
+			var afterDomain= currURL.substring(currURL.lastIndexOf('/') + 1);
+			//2- get the part before '?'
+			var beforeQueryString= afterDomain.split("?")[0];  
+	 
+			return beforeQueryString;     
+		}
+	
+		var Timer_UpdateMeasurements;
+		var tab_pane;
+	
+		function simplePrint() {
+			var pretty = document.getElementById('newConfigJSON').value;
+			var obj = JSON.parse(pretty);
+			var simple = JSON.stringify(obj);
+			document.getElementById('newConfigJSON').value = simple;
+		}		
+		
+		//updateStatus();
+		
+		function updateStatus() {  
+			const ENS160B_ID = [];
+			$.getJSON('/config.json', function(json) {
+				document.getElementById("newConfigJSON").value = JSON.stringify(json, undefined, 4); 
+				for (let i = 0; i < json.ENS160B.length; i++) {
+					ENS160B_ID[i] = json.ENS160B[i].ID;
+				}
+			}).fail(function(err){
+				console.log("err getJSON config.json " + JSON.stringify(err));
+			});
+
+			$.getJSON('/status.json', function(json) {
+				//console.log(JSON.stringify(json, undefined, 4));
+			
+				document.getElementById("title").innerHTML = "Logger - " + json.APID;
+				
+				document.getElementById("sysMAC").innerHTML = json.MAC;
+				document.getElementById("sysIP").innerHTML = json.IP;
+				
+				if (json.Influx == 0) document.getElementById("sysInflux").className = "alert alert-danger";
+				else if (json.Influx == 1) document.getElementById("sysInflux").className = "alert alert-success";
+				
+				if (json.hasOwnProperty("ENS160a")) {
+					if (json.ENS160a == 0) document.getElementById("sysENS160a").className = "alert alert-danger";
+					else if (json.ENS160a == 1) document.getElementById("sysENS160a").className = "alert alert-success";
+				}
+				if (json.hasOwnProperty("ENS160b")) {
+					if (json.ENS160b == 0) document.getElementById("sysENS160b").className = "alert alert-danger";
+					else if (json.ENS160b == 1) document.getElementById("sysENS160b").className = "alert alert-success";
+				}
+				
+				if (json.hasOwnProperty("ENS210")) {
+					if (json.ENS210 == 0) document.getElementById("sysENS210").className = "alert alert-danger";
+					else if (json.ENS210 == 1) document.getElementById("sysENS210").className = "alert alert-success";
+				}								
+				
+				if (json.hasOwnProperty("WSname0")) {
+					document.getElementById("sysWS0").innerHTML = json.WSname0;
+					if (json.hasOwnProperty("WSstat0")) {
+						if (json.WSstat0 == 0) document.getElementById("sysWS0").className = "alert alert-danger";
+						else if (json.WSstat0 == 1) document.getElementById("sysWS0").className = "alert alert-success";
+						else if (json.WSstat0 == 2) document.getElementById("sysWS0").className = "alert alert-info";
+					}
+				}	
+				if (json.hasOwnProperty("WSname1")) {
+					document.getElementById("sysWS1").innerHTML = json.WSname1;
+					if (json.hasOwnProperty("WSstat1")) {
+						if (json.WSstat1 == 0) document.getElementById("sysWS1").className = "alert alert-danger";
+						else if (json.WSstat1 == 1) document.getElementById("sysWS1").className = "alert alert-success";
+						else if (json.WSstat1 == 2) document.getElementById("sysWS1").className = "alert alert-info";
+					}
+				}
+				if (json.hasOwnProperty("WSname2")) {
+					document.getElementById("sysWS2").innerHTML = json.WSname2;
+					if (json.hasOwnProperty("WSstat2")) {
+						if (json.WSstat2 == 0) document.getElementById("sysWS2").className = "alert alert-danger";
+						else if (json.WSstat2 == 1) document.getElementById("sysWS2").className = "alert alert-success";
+						else if (json.WSstat2 == 2) document.getElementById("sysWS2").className = "alert alert-info";
+					}
+				}
+				if (json.hasOwnProperty("WSname3")) {
+					document.getElementById("sysWS3").innerHTML = json.WSname3
+					if (json.hasOwnProperty("WSstat3")) {
+						if (json.WSstat3 == 0) document.getElementById("sysWS3").className = "alert alert-danger";
+						else if (json.WSstat3 == 1) document.getElementById("sysWS3").className = "alert alert-success";
+						else if (json.WSstat3 == 2) document.getElementById("sysWS3").className = "alert alert-info";
+					}
+				}				
+				if (json.hasOwnProperty("jsonUpdate")) {
+					if (json.jsonUpdate == 1) {
+						document.getElementById("restartButton").innerHTML = "Restart required due to changed JSON configuration!";
+						document.getElementById("restartButton").className = "btn btn-outline-danger";
+					}
+				}								
+			}).fail(function(err){
+				console.log("err getJSON status.json " + JSON.stringify(err));
+			});
+
+			
+		}
+			
+		const configText = document.getElementById("newConfigJSON");
+
+		configText.addEventListener("input", function (event) {
+			str = configText.value;
+			try {
+				var obj = JSON.parse(str);
+			} catch (e) {
+				configText.setCustomValidity("JSON not valid!!!");
+				configText.reportValidity();
+				configText.className = "form-control form-control-sm bg-warning bg-opacity-75";
+				return false;
+			}
+			
+			errorText = "";
+
+			if (!obj.hasOwnProperty("General")) errorText = "JSON not valid: General block missing!!!";
+			if (!obj["General"].hasOwnProperty("LOCATION")) errorText = "JSON not valid: General - LOCATION missing!!!";
+			if (!obj["General"].hasOwnProperty("CYC_LOG")) errorText = "JSON not valid: General - CYC_LOG missing!!!";
+			
+			if (!obj.hasOwnProperty("INFLUX")) errorText = "JSON not valid: INFLUX block missing!!!";
+			if (!obj["INFLUX"].hasOwnProperty("URL")) errorText = "JSON not valid: INFLUX - URL missing!!!";
+			if (!obj["INFLUX"].hasOwnProperty("TOKEN")) errorText = "JSON not valid: INFLUX - TOKEN missing!!!";
+			if (!obj["INFLUX"].hasOwnProperty("ORG")) errorText = "JSON not valid: INFLUX - ORG missing!!!";
+			if (!obj["INFLUX"].hasOwnProperty("BUCKET")) errorText = "JSON not valid: INFLUX - BUCKET missing!!!";
+
+			if (errorText != "") {
+				configText.setCustomValidity(errorText);
+				configText.reportValidity();
+				configText.className = "form-control form-control-sm bg-warning bg-opacity-75";
+				return false;			
+			}
+			configText.className = "form-control form-control-sm";
+			configText.setCustomValidity("");
+			return true;
+		});
+		
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
