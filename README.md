@@ -1,4 +1,4 @@
-# Written time
+# Time expressed by words
 
 ## Introduction
 
